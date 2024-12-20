@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -6,17 +6,28 @@ export function ContactForm() {
     email: '',
     phone: '',
     message: '',
-    preferredContact: 'email'
+    preferredContact: 'email',
   });
+
+  // Manejo genérico de cambios en inputs y textarea
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  // Manejo específico para radio buttons
+  const handlePreferredContact = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, preferredContact: e.target.value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log('Form submitted:', formData);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Nombre completo */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
           Nombre completo
@@ -25,12 +36,13 @@ export function ContactForm() {
           type="text"
           id="name"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         />
       </div>
 
+      {/* Email */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           Email
@@ -39,12 +51,13 @@ export function ContactForm() {
           type="email"
           id="email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         />
       </div>
 
+      {/* Teléfono */}
       <div>
         <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
           Teléfono
@@ -53,11 +66,12 @@ export function ContactForm() {
           type="tel"
           id="phone"
           value={formData.phone}
-          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+          onChange={handleChange}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         />
       </div>
 
+      {/* Mensaje */}
       <div>
         <label htmlFor="message" className="block text-sm font-medium text-gray-700">
           Mensaje
@@ -65,13 +79,15 @@ export function ContactForm() {
         <textarea
           id="message"
           value={formData.message}
-          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          onChange={handleChange}
           rows={4}
+          minLength={10} // Validación adicional
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         />
       </div>
 
+      {/* Método de contacto preferido */}
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Método de contacto preferido
@@ -82,7 +98,7 @@ export function ContactForm() {
               type="radio"
               value="email"
               checked={formData.preferredContact === 'email'}
-              onChange={(e) => setFormData({ ...formData, preferredContact: e.target.value })}
+              onChange={handlePreferredContact}
               className="form-radio text-blue-600"
             />
             <span className="ml-2">Email</span>
@@ -92,7 +108,7 @@ export function ContactForm() {
               type="radio"
               value="phone"
               checked={formData.preferredContact === 'phone'}
-              onChange={(e) => setFormData({ ...formData, preferredContact: e.target.value })}
+              onChange={handlePreferredContact}
               className="form-radio text-blue-600"
             />
             <span className="ml-2">Teléfono</span>
@@ -100,6 +116,7 @@ export function ContactForm() {
         </div>
       </div>
 
+      {/* Botón de envío */}
       <button
         type="submit"
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
